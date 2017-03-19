@@ -24,6 +24,7 @@
 <h1>前端技术架构与组件化开发介绍</h1>
 <p><a href="https://liangshuai.me/" target="_blank">@梁帅</a></p>
 <p><a href="https://liangshuai.me/vue/" target="_blank">https://liangshuai.me/vue/</a></p>
+<p><a href="https://liangshuai.github.io/vue/" target="_blank">https://liangshuai.github.io/vue/</a></p>
 
 </article></section></slide>
 <slide class="slide"><section class="slide-wrapper"><hgroup>
@@ -485,6 +486,7 @@ new Vue({
 
 <ul>
 <li>Props Down, Events Up</li>
+<li>对象或者数组作为Props传递给子组件</li>
 <li>Event Bus</li>
 <li>Vuex</li>
 </ul>
@@ -559,6 +561,19 @@ export default {
 }
 &lt;/script&gt;
 </code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>对象或者数组作为Props传递给子组件</h1>
+
+</hgroup><article>
+
+<p>不是最佳实践，但是在某些场合下是非常有用的，
+比如VT2.0 创建流水线， 整个表单特别大，分了几个Tab页，
+每个Tab页又划分为N多个表单组， 一个Tab页里面通常还有N多个Job
+每个Job都是插件化的，字段和结构都可能需要插件自定义
+这个时候不管是Vuex还是Event Bus实现起来都很繁琐，
+需要每个插件手动同步数据， 使用对象和数组类型的就很方便同步更新</p>
 
 </article></section></slide>
 <slide class="slide"><section class="slide-wrapper"><hgroup>
@@ -1112,6 +1127,7 @@ if (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) {
 <li>如果oldVNode跟vnode完全一致， 不做什么操作</li>
 <li>两者都是静态节点， 具有相同的key， 并且vnode是克隆节点或者v-once指令控制的节点， 只需要把oldVnode。ele
  和oldVnode.child都复制到vnode上</li>
+<li>如果vnode是文本节点，但新旧文本不同，直接更新新的就可以了</li>
 <li>如果vnode不是文本节点</li>
 </ol>
 <ul>
@@ -1120,9 +1136,66 @@ if (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) {
 <li>如果只有vnode有子节点，就创建这些节点</li>
 <li>如果都没有子子节点，oldVnode是文本节点，就把vnode.elm设置为空字符串</li>
 </ul>
-<ol>
-<li>如果vnode是文本节点，但新旧文本不同，直接更新新的就可以了</li>
-</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vuex</h1>
+
+</hgroup><article>
+
+<p>前端状态管理</p>
+<ul>
+<li>集中式管理状态和数据</li>
+<li>集中式以后，各个组件之间不需要手动同步数据</li>
+<li>方便调试，Vue-devtools可以直接查看数据</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>State</h1>
+
+</hgroup><article>
+
+<ul>
+<li>state就是集中式的数据存储对象</li>
+<li>对于一个Vuex的实例来说，只有一个state tree</li>
+<li>state可以划分为不同的模块</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Mutations</h1>
+
+</hgroup><article>
+
+<ul>
+<li>修改state tree的唯一途径</li>
+<li>每个Mutation有一个名字和一个handler</li>
+<li>名字命名通常要见名知意</li>
+<li>handler必须是同步的</li>
+<li>handler的第一个参数固定为state，后面的参数可以是数据</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Actions</h1>
+
+</hgroup><article>
+
+<ul>
+<li>触发(多个)Mutation</li>
+<li>可以是异步的</li>
+<li>可以把Ajax接口调用封装在action里面, 组件只应该关心数据，不必关心数据怎么来的</li>
+<li>组件内使用this.$store.dispatch(action, payload)来触发Action</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<img src="./assets/images/vuex.png" alt="VNode">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>&lt;完&gt;</h1>
 
 </article></section></slide>
         
