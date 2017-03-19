@@ -1,0 +1,1196 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.2
+    site: https://github.com/ksky521/nodePPT
+    date: 2017年3月12日
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>前端技术架构与组件化开发介绍 - By 梁帅</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>前端技术架构与组件化开发介绍</h1>
+<p><a href="https://liangshuai.me/" target="_blank">@梁帅</a></p>
+<p><a href="https://liangshuai.me/vue/" target="_blank">https://liangshuai.me/vue/</a></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>目录</h1>
+
+</hgroup><article>
+
+<ul>
+<li>ES6简介</li>
+<li>Vue用法介绍</li>
+<li>Vue原理</li>
+<li>Vuex用法</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>ECMAScript6 简介</h1>
+<p>ES6是JavaScript语言的下一代标准， 已经在2015年正式发布。</p>
+<p>它的目标是使JavaScript语言可以用来编写复杂的大型应用程序，成为企业级开发语言。</p>
+<p>ES6即是ES2015， 标准在每年的6月份正式发布一次，作为当年的正式版本。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>let和const变量声明</h1>
+
+</hgroup><article>
+
+<p>let类似var, 用来声明变量， 但是区别在于作用域是块级的</p>
+<pre><code class="js">{
+    let a = 10;
+    var b = 1;
+}
+console.log(a); //ReferenceError
+for(let i = 0, len = arr.length; i &lt; len; i++){
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>let作用域特性</h1>
+
+</hgroup><article>
+
+<ul>
+<li>块级作用域</li>
+<li>不存在变量提升</li>
+<li>不允许重复声明</li>
+<li>暂时性死区TDZ(有let块不再受外部影响，即便是let之上的)</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>TDZ</h1>
+
+</hgroup><article>
+
+<pre><code class="js">var tmp = 123;
+
+if (true) {
+  tmp = &#39;abc&#39;; // ReferenceError
+  let tmp;
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>const</h1>
+<p>const是只读常量，常量的值不能改变</p>
+<p>特性上除了不能改变之外都与let相似</p>
+<blockquote>
+<p>新框架下均需使用let/const， 应该避免使用var</p>
+</blockquote>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>解构</h1>
+
+</hgroup><article>
+
+<pre><code class="js">let [foo, [[bar], baz]] = [1, [[2], 3]];
+const obj = { idx: 1 }
+let { idx } = obj;
+let [head, ...tail] = [1, 2, 3, 4]; //tail是[2,3,4]
+let [ , , third] = [&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;];
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>解构默认值</h1>
+
+</hgroup><article>
+
+<pre><code class="js">let [foo = true] = [];
+var {x, y = 5} = {x: 1};
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>函数参数的解构</h1>
+
+</hgroup><article>
+
+<pre><code class="js">const obj = {
+    id: 1,
+    username: &#39;PATech&#39;
+}
+
+function output({ id = -1, username }) {
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>字符串的扩展</h1>
+
+</hgroup><article>
+
+<ul>
+<li>includes 类似之前的indexOf， 直接返回Boolean</li>
+<li>startsWith</li>
+<li>endsWith</li>
+<li>padStart</li>
+<li>padEnd</li>
+<li>模板字符串</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>新增方法使用的注意事项</h1>
+
+</hgroup><article>
+
+<p>如果使用了Babel进行ES6 -&gt; ES5转义的话，<code>babel-core</code>并不能转义<code>prototype</code>上的方法
+需要使用<code>babel-polyfill</code>进行转义</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模板字符串</h1>
+
+</hgroup><article>
+
+<p>const name = &#39;liangshuai&#39;;
+const greet = <code>Hello, ${ name }</code>;</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>函数上的新特性</h1>
+<ul>
+<li>默认参数(参考函数参数析构)</li>
+<li>rest参数</li>
+<li>扩展运算符</li>
+<li>箭头函数</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>rest参数</h1>
+
+</hgroup><article>
+
+<pre><code class="js">function restParams(a, b, ...c) {
+    console.log(1, 2, 3, 4, 5);
+}
+restParams(1, 2, [3, 4, 5]); // 1,2,3,4,5
+</code></pre>
+<p>rest参数用法同Java的不定参数类似， 只能放在最后且只能有一个不定参数</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>扩展运算符</h1>
+
+</hgroup><article>
+
+<p>将一个数组转为用逗号分隔的参数序列</p>
+<pre><code class="js">const foo = function(a, b, c) {
+    console.log(a, b, c);
+}
+const arr = [1, 2, 3];
+foo(...arr);
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>项目中使用扩展运算符的一个案例</h1>
+
+</hgroup><article>
+
+<pre><code class="js">export default {
+    name: &#39;apps-list&#39;,
+    components: {
+        ContentTitle,
+        AppItem
+    },
+    computed: {
+        ...mapGetters({
+            mine: &#39;getMineList&#39;,
+            recentOpen: &#39;getRecentOpenList&#39;
+        })
+    }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>箭头函数</h1>
+
+</hgroup><article>
+
+<p>类似于Java8的Lambda</p>
+<pre><code class="js">this.$validator.validateAll().then((success) =&gt; {
+
+});
+const default = () =&gt; [] // 默认返回箭头函数后值
+const rtnObj = () =&gt; ({ name: &#39;Vue&#39; });
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>箭头函数中的this</h1>
+
+</hgroup><article>
+
+<p>箭头函数会自动绑定上下文this</p>
+<pre><code class="js">function foo() {
+   setTimeout(() =&gt; {
+      console.log(&quot;id:&quot;, this.id);
+   });
+}
+foo.call( { id: 42 } );
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>对象的扩展</h1>
+
+</hgroup><article>
+
+<pre><code class="js">const birth = &#39;2000/01/01&#39;;
+const Person = {
+  name: &#39;张三&#39;,
+  birth, //等同于birth: birth
+  hello() { console.log(&#39;我的名字是&#39;, this.name); } // 等同于hello: function ()...
+};
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Module</h1>
+
+</hgroup><article>
+
+<pre><code class="js">//export.js
+export const username = &#39;Michael&#39;;
+export {firstName, lastName, year};
+export function f() {};
+export {
+  v1 as streamV1,
+  v2 as streamV2,
+  v2 as streamLatestVersion
+};
+
+export default {
+    a: &#39;111&#39;;
+}
+//import.js
+import { firstName, lastName, f, streamV1 } from &#39;./export&#39;;
+import * as all from &#39;./export&#39;;
+import obj from &#39;./export&#39;;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vue用法</h1>
+
+</hgroup><article>
+
+<ul>
+<li>Vue简介</li>
+<li>Vue模版语法</li>
+<li>Vue组件</li>
+<li>Render函数</li>
+<li>插件机制</li>
+<li>Mixins</li>
+<li>Vue指令</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+
+<h2>Vue是数据驱动 ＋ 组件化的前端开发框架</h2>
+<img src="./assets/images/2.png" alt="Vue">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>DEMO</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;div id=&quot;demo&quot;&gt;
+    &lt;h1 @click=&quot;handle&quot;&gt;{{ msg }}&lt;/h1&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="javascript">const vm = new Vue({
+    el: &#39;#demo&#39;,
+    data: {
+        msg: &#39;Hello, Vue.js!&#39;
+    },
+    methods: {
+        handle() {
+            console.log(&#39;Click&#39;);
+        }
+    }
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模版语法</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;div id=&quot;app-5&quot;&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+    &lt;span&gt;{{ message.split(&#39;&#39;).reverse().join(&#39;&#39;) }}&lt;/span&gt;
+    &lt;div v-html=&quot;rawHtml&quot;&gt;&lt;/div&gt; &lt;!-- 注意XSS攻击风险 --&gt;
+    &lt;p v-if=&quot;seen&quot;&gt;Now you see me&lt;/p&gt;
+    &lt;button v-on:click=&quot;reverseMessage&quot;&gt;逆转消息&lt;/button&gt;
+    &lt;div v-for=&quot;item in groceryList&quot; id=&quot;item.id&quot;&gt;&lt;/div&gt;
+    &lt;div v-bind:class=&quot;{ active: isActive }&quot;&gt;&lt;/div&gt;
+    &lt;div :class=&quot;{ active: isActive, &#39;text-danger&#39;: hasError }&quot;&gt;&lt;/div&gt;
+    &lt;div :class=&quot;classObject&quot;&gt;&lt;/div&gt; &lt;!-- classObject: { active: true } --&gt;
+    &lt;div :class=&quot;[activeClass, errorClass]&quot;&gt;
+    &lt;div :class=&quot;[isActive ? activeClass : &#39;&#39;, errorClass]&quot;&gt;
+    &lt;div :style=&quot;{ color: activeColor, fontSize: fontSize + &#39;px&#39; }&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模版语法 -- 循环</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;div v-for=&quot;item in groceryList&quot;&gt;&lt;/div&gt;
+&lt;div v-for=&quot;(item, index) in groceryList&quot;&gt;&lt;/div&gt;
+&lt;div v-for=&quot;item of groceryList&quot;&gt;&lt;/div&gt;
+&lt;div v-for=&quot;(value, key) in object&quot;&gt;&lt;/div&gt;
+&lt;div&gt;&lt;span v-for=&quot;n in 10&quot;&gt;{{ n }}&lt;/span&gt;&lt;/div&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>修饰符</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;form v-on:submit.prevent=&quot;onSubmit&quot;&gt;&lt;/form&gt; &lt;!-- event.preventDefault() --&gt;
+&lt;a @click.stop=&quot;handle&quot;&gt;Link&lt;/a&gt; &lt;!-- event.stopPropagation() --&gt;
+&lt;input v-model=&quot;newTodoText&quot; v-on:keyup.enter=&quot;addNewTodo&quot; placeholder=&quot;Add a todo&quot;/&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>过滤器</h1>
+<pre><code class="html">&lt;div&gt;{{ message | capitalize }}&lt;/div&gt;
+&lt;div&gt;{{ message | filterA | filterB }}&lt;/div&gt;
+&lt;div&gt;{{ message | filterA(&#39;arg1&#39;, arg2) }}&lt;/div&gt;
+</code></pre>
+<pre><code class="js">new Vue({
+  filters: {
+    capitalize: function (value) {
+      if (!value) return &#39;&#39;
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  }
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>表单绑定</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;input v-model=&quot;message&quot; placeholder=&quot;edit me&quot;&gt;
+&lt;p&gt;Message is: {{ message }}&lt;/p&gt;
+&lt;input type=&quot;checkbox&quot; id=&quot;checkbox&quot; v-model=&quot;checked&quot;&gt;
+&lt;label for=&quot;checkbox&quot;&gt;{{ checked }}&lt;/label&gt;
+&lt;select v-model=&quot;selected&quot;&gt;
+  &lt;option v-for=&quot;option in options&quot; v-bind:value=&quot;option.value&quot;&gt;
+    {{ option.text }}
+  &lt;/option&gt;
+&lt;/select&gt;
+&lt;span&gt;Selected: {{ selected }}&lt;/span&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>组件</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;div id=&quot;example&quot;&gt;
+  &lt;my-component&gt;&lt;/my-component&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="js">Vue.component(&#39;my-component&#39;, {
+  template: &#39;&lt;div&gt;A custom component!&lt;/div&gt;&#39;
+});
+new Vue({
+  el: &#39;#example&#39;
+});
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>组件的常见配置项</h1>
+
+</hgroup><article>
+
+<pre><code class="js">export default {
+    template: &#39;&#39;,
+    data: {
+        message: &#39;hello&#39;
+    },
+    props: {
+        propA: Number,
+        propE: {
+            type: Object,
+            default: () =&gt; { message: &#39;hello&#39; }
+        }
+    },
+    methods: {
+        handle() {}
+    },
+    computed: {
+        computeDemo: () =&gt;  propE.message + propA;
+    },
+    components: { compA, compB },
+    created() {},
+    ... // 其它生命周期方法
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>组件生命周期</h1>
+
+</hgroup><article>
+
+<img src="./assets/images/lifecycle.png" alt="Vue">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>组件之间的通信</h1>
+
+</hgroup><article>
+
+<ul>
+<li>Props Down, Events Up</li>
+<li>Event Bus</li>
+<li>Vuex</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Props Down</h1>
+
+</hgroup><article>
+
+<h2>父组件的props更新之后，自组件总会拿到最新的数据</h2>
+<pre><code class="html">&lt;!-- Parent Component --&gt;
+&lt;parent-comp :propA=&quot;propA&quot; propB=&quot;propB&quot;&gt;&lt;/parent-comp&gt;
+</code></pre>
+<pre><code class="js">Vue.component(&#39;child&#39;, {
+  props: {
+      propA: Number,
+      propB: {
+          type: String
+      },
+      propC: {
+          type:Object,
+          default: () =&gt; {}
+      }
+  },
+  template: &#39;&lt;span&gt;{{ myMessage }}&lt;/span&gt;&#39;
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Events Up -- Parent</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;template&gt;
+&lt;div&gt;
+    &lt;child-comp v-on:change=&quot;handle&quot;&gt;&lt;/child-comp&gt;
+&lt;/div&gt;    
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+    name: &#39;parent&#39;,
+    methods: {
+        handle(val) {
+            //父组件接收val
+        }
+    }
+}
+&lt;/script&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Events Up -- Child</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;template&gt;
+    &lt;div&gt;
+        &lt;input v-model=&quot;username&quot; @input=&quot;emit&quot;&gt;&lt;/child-comp&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+    name: &#39;child&#39;,
+    methods: {
+        emit() {
+            this.$emit(&#39;change&#39;, this.username);
+        }
+    }
+}
+&lt;/script&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Event Bus</h1>
+
+</hgroup><article>
+
+<pre><code class="js">const bus = new Vue();
+
+bus.$emit(&#39;change&#39;, val);
+
+bus.$on(&#39;change&#39;, (val) =&gt; { console.log(val); })
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Render函数</h1>
+
+</hgroup><article>
+
+<pre><code class="js">Vue.component(&#39;anchored-heading&#39;, {
+  render: function (createElement) {
+    return createElement(
+      &#39;h&#39; + this.level,
+      this.$slots.default
+    )
+  },
+  props: {
+    level: {
+      type: Number,
+      required: true
+    }
+  }
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>createElement参数</h1>
+
+</hgroup><article>
+
+<h2>createElement(String|Object|Function, Object, String|Array)</h2>
+<ul>
+<li>第一个参数返回一个HTML标签</li>
+<li>Object模版相关属性的相关对象</li>
+<li>第三个参数如果是字符串就是标签的innerText, 如果是数组就是子节点</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Data Object参数</h1>
+
+</hgroup><article>
+
+<pre><code class="js">{
+    &#39;class&#39;: { foo: true, bar, false },
+    style: { fontSize: &#39;14px&#39; },
+    attr: { id: &#39;node_1001&#39;},
+    props: {...}
+    on: { click: this.clickHandler },
+    nativeOn: { click: this.nativeClickHandler }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>createElement应用</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;slot&gt;{{ message }}&lt;/slot&gt;
+</code></pre>
+<pre><code class="js">new Vue({
+  el: &#39;#editor&#39;,
+  data: {
+    message: null
+  },
+  created() {
+      this.$slots.default = [ this.renderField() ]
+  },
+  methods: {
+      renderField () {
+        const h = this.$createElement;
+        return h(&#39;span&#39;, {&#39;style&#39;: {&#39;fontSize&#39;: &#39;20px&#39;,&#39;color&#39;: &#39;red&#39;}}, &#39;Wizard&#39;)
+    }
+  }
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Mixin</h1>
+
+</hgroup><article>
+
+<p>灵活的分布式复用 Vue 组件的方式</p>
+<ul>
+<li>组件内部</li>
+<li>全局<pre><code class="js">var myMixin = {
+methods: {
+  hello:  () =&gt; {console.log(&#39;hello from mixin!&#39;) } }
+}
+</code></pre>
+组件内部使用 <code>mixins</code> 选项
+全局使用 <code>Vue.mixin(mixin)</code> 注册，所有组件均有这些功能</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>插件</h1>
+
+</hgroup><article>
+
+<p>插件是一个普通的JS对象， 里面包含了一个<code>install</code>方法， Vue会传递</p>
+<pre><code class="js">const MyPlugin.install = function(Vue, options) {
+    Vue.mixin
+    Vue.directive
+    Vue.prototype.$notify
+}
+</code></pre>
+<p>插件使用 <code>Vue.use(MyPlugin)</code> 启用</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vue原理与源码</h1>
+
+</hgroup><article>
+
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>深入Vue响应式原理</h1>
+<ul>
+<li>Object.defineProperty</li>
+<li>Array</li>
+<li>Observer</li>
+<li>Watcher</li>
+<li>Dep</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vue响应式架构</h1>
+
+</hgroup><article>
+
+<img src="./assets/images/reactive.jpeg" alt="Vue">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Object.defineProperty</h1>
+
+</hgroup><article>
+
+<p>ES5新增的方法，无法Shim， 所以Vue不兼容IE8以及浏览器</p>
+<pre><code class="js">const a = {};
+a.b = 123;
+// 等价于
+Object.defineProperty(a,&#39;b&#39;,{
+  value:123,
+  writable:false,
+  enumerable:false,
+  configurable:false
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+
+<h1>Getter/Setter</h1>
+<pre><code class="js">var a= {}
+Object.defineProperty(a, &#39;b&#39;,{
+  set:function(newValue){
+    console.log(&quot;setter&quot;＋newValue)
+  },
+  get:function(){
+    console.log(&quot;getter&quot;)
+    return 2 // DEMO
+   }
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vue里面Observer的实现 -- constructor</h1>
+
+</hgroup><article>
+
+<pre><code class="js">export class Observer {
+    ...
+    constructor (value: any) {
+    this.value = value
+    this.dep = new Dep()
+    this.vmCount = 0
+    def(value, &#39;__ob__&#39;, this)  //在值上挂载__ob__表示已经Observer
+    if (Array.isArray(value)) {
+      const augment = hasProto
+        ? protoAugment
+        : copyAugment
+      augment(value, arrayMethods, arrayKeys)
+      this.observeArray(value) // 数组的话走数组的Observer
+    } else {
+      this.walk(value) //对象类型的需要递归遍历，进行Observer
+    }
+  }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>walk</h1>
+
+</hgroup><article>
+
+<pre><code class="js">walk (obj: Object) {
+    const keys = Object.keys(obj)
+    for (let i = 0; i &lt; keys.length; i++) {
+      defineReactive(obj, keys[i], obj[keys[i]])
+    }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>defineReactive</h1>
+
+</hgroup><article>
+
+<pre><code class="js">let childOb = observe(val)
+  Object.defineProperty(obj, key, {
+    ...
+    get: function reactiveGetter () {
+      const value = getter ? getter.call(obj) : val
+      if (Dep.target) {
+        ... // 这部分主要是为了收集依赖， 暂时忽略
+      }
+      return value
+    },
+    set: function reactiveSetter (newVal) {
+      ...
+      if (newVal === value || (newVal !== newVal &amp;&amp; value !== value))  return //没有更新不触发
+      setter ? setter.call(obj, newVal) : (val = newVal);
+      childOb = observe(newVal) // 递归Observer, 所以新增的属性是对象类型，该对象里面也会被Observer， 根上却不能新加属性
+      dep.notify() // 通知，触发更新
+    }
+  })
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Observer Array</h1>
+
+</hgroup><article>
+
+<pre><code class="js">const arrayProto = Array.prototype
+export const arrayMethods = Object.create(arrayProto) //很关键！不至于影响Array.prototype
+[&#39;push&#39;, &#39;pop&#39;, &#39;shift&#39;, &#39;unshift&#39;, &#39;splice&#39;, &#39;sort&#39;, &#39;reverse&#39;] .forEach(function (method) {
+  const original = arrayProto[method]
+  def(arrayMethods, method, function mutator () {
+    ... // args 是参数
+    const result = original.apply(this, args)
+    const ob = this.__ob__
+    let inserted
+       ...
+    if (inserted) ob.observeArray(inserted) // Observer数组成员
+    // notify change
+    ob.dep.notify()
+    return result
+  })
+})
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Vue Watch的实现</h1>
+
+</hgroup><article>
+
+<p>不同于Angular脏检查的watch，Vue的watch也是基于setter/getter， 所以不会太影响性能</p>
+<pre><code class="js">export default class Watcher {
+    constructor (vm, expOrFun, cb, options) {
+        ...
+        // 确保watcher的getter是一个function
+        if (typeof expOrFn === &#39;function&#39;) {
+          this.getter = expOrFn 
+        } else {
+          this.getter = parsePath(expOrFn) //parsePath返回一个function，该function返回要访问的对象
+          ...
+        }
+        this.value = this.lazy ? undefined : this.get() // 实现watch的关键
+    }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Watch的实现 -- get()</h1>
+
+</hgroup><article>
+
+<pre><code class="js">get () {
+    pushTarget(this) // 先更新Dep.target,创建依赖
+    let value
+    const vm = this.vm
+    if (this.user) {
+      value = this.getter.call(vm, vm) // 调用getter
+    popTarget()
+    this.cleanupDeps()
+    return value
+  }
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>pushTarget的实现</h1>
+
+</hgroup><article>
+
+<pre><code class="js">Dep.target = null
+const targetStack = []
+
+export function pushTarget (_target: Watcher) {
+  if (Dep.target) targetStack.push(Dep.target)
+  Dep.target = _target // 为Dep.target赋当前watch
+}
+
+export function popTarget () {
+  Dep.target = targetStack.pop()
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>再回头看看defineReactive的实现</h1>
+
+</hgroup><article>
+
+<pre><code class="js">Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter () {
+      const value = getter ? getter.call(obj) : val
+      if (Dep.target) {
+        dep.depend() // 用于创建依赖
+        if (childOb) {
+          childOb.dep.depend()
+        }
+        if (Array.isArray(value)) {
+          dependArray(value)
+        }
+      }
+      return value
+    },
+    set: function reactiveSetter(newVal) {
+        ...
+        dep.notify() // 设置了新值
+    }
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>notify的实现</h1>
+
+</hgroup><article>
+
+<blockquote>
+<p>dep.notify() --&gt; watcher update() --&gt; watcher run --&gt; cb</p>
+</blockquote>
+<p>通过上面的流程实现了更新后的回调</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Virtual DOM的实现</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Virtual DOM的必要性</h1>
+
+</hgroup><article>
+
+<ul>
+<li>DOM更新昂贵且耗时， 特别是频繁的触发reflow</li>
+<li>通过JS来生成一份虚拟的DOM， 避免DOM查找的代价</li>
+<li>虚拟DOM不需要频繁的更新， 可以批量更新</li>
+<li>不需要手动更新DOM</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>DEMO</h1>
+
+</hgroup><article>
+
+<pre><code class="html">&lt;ul id=&#39;myId&#39;&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;ul&gt;
+</code></pre>
+<pre><code class="js">let domNode = {
+  tag: &#39;ul&#39;
+  attributes: { id: &#39;myId&#39; }
+  children: [
+    //这里是 li
+  ]
+};
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>VNode的属性</h1>
+
+</hgroup><article>
+
+<pre><code class="js">tag: string | void; // 当前节点标签名
+data: VNodeData | void; // 当前节点的数据对象
+children: ?Array&lt;VNode&gt;; // 前节点的子节点
+text: string | void; // 当前节点的文本，一般用于文本节点
+elm: Node | void; // 虚拟节点对应的真实DOM节点
+ns: string | void;
+context: Component | void; // 编译作用域
+functionalContext: Component | void; // 函数化组件的作用域
+key: string | number | void; // 节点的key属性，用于作为节点的标识，有利于patch的优化
+componentOptions: VNodeComponentOptions | void;
+componentInstance: Component | void; // component instance
+parent: VNode | void; // 父节点
+raw: boolean; // raw html
+isStatic: boolean; // 静态节点的标识
+isRootInsert: boolean; // necessary for enter transition check
+isComment: boolean; // empty comment placeholder?
+isCloned: boolean; // 当前节点是否为克隆节点
+isOnce: boolean; // is a v-once node?
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>VNode的分类</h1>
+
+</hgroup><article>
+
+<img src="./assets/images/vnode.png" alt="VNode">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>经典Virtual DOM的三个步骤</h1>
+
+</hgroup><article>
+
+<ol>
+<li>createElement() 用 JavaScript对象(虚拟树) 描述 真实DOM对象(真实树)</li>
+<li>diff(oldNode, newNode) : 对比新旧两个虚拟树的区别，收集差异</li>
+<li>patch() 将差异应用到真实的DOM</li>
+</ol>
+<p>Vue的patch实际上包含了diff</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>createElement 的实现</h1>
+<pre><code class="js">export function createElement (context, tag, data, children, normalizationType) {
+    if (data &amp;&amp; data.__ob__) {
+        // data是被Observer的不能用做虚拟节点的data
+        createEmptyVNode() // data在vnode渲染过程中可能会被改变，这样会触发监控，导致不符合预期的操作
+    }
+    if(!tag) createEmptyVnode() // tag为空的不知道怎么创建，所以创建空节点
+    ...
+    if(typeof tag === &#39;string&#39;) {
+        if (config.isReservedTag(tag)) {
+            // HTML 的标签，或者Weex内置的标签
+            vnode = new VNode(config.parsePlatformTagName(tag), data, children, undefined, undefined, context ) 
+        }else if ((Ctor = resolveAsset(context.$options, &#39;components&#39;, tag))) {
+            //如果不是保留标签，那么我们将尝试从vm的components上查找是否有这个标签的定义
+            vnode = createComponent(Ctor, data, context, children, tag)
+        }else {
+            // 不符合以上情况，正常创建一个VNode 兜底方案
+            vnode = new VNode(tag, data, children, undefined, undefined, context ) 
+        }
+    } else {
+        // tag不是字符串，认为tag是组件构造类
+        vnode = createComponent(tag, data, context, children)
+    }
+    return vnode
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Patch函数的实现</h1>
+
+</hgroup><article>
+
+<p>Vue 基于Snabbdom Virtual DOM的diff 和 patch算法</p>
+<pre><code class="js">function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) { ... }
+</code></pre>
+<ul>
+<li><code>oldVnode</code> 老的Vnode</li>
+<li><code>vnode</code> 新的VNode</li>
+<li><code>hydrating</code> 是否要跟真是dom混合</li>
+<li><code>removeOnly</code> 特殊flag，用于<code>&lt;transition-group&gt;</code>组件</li>
+<li><code>parentElm</code> 父节点</li>
+<li><code>refElm</code> 新节点将插入到refElm之前</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>＃ Patch函数的实现</h2>
+<pre><code class="js">// 如果新的不存在但是老的存在，说明意图是要销毁老节点
+ if (!vnode) {
+  if (oldVnode) invokeDestroyHook(oldVnode)
+  return
+}
+let isInitialPatch = false
+const insertedVnodeQueue = []
+
+if (!oldVnode) {
+  // empty mount (likely as component), create new root element
+  isInitialPatch = true
+  // 老的不存在，说明需要创建新的VNode
+  createElm(vnode, insertedVnodeQueue, parentElm, refElm)
+} else {
+  // 老的新的都存在，见下一页
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Patch函数的实现</h1>
+
+</hgroup><article>
+
+<pre><code class="js">const isRealElement = isDef(oldVnode.nodeType)
+if (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) {
+    // 新的老的是同样的节点，调用patchVnode进行patch
+    patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly)
+} else {
+    // 当vnode和oldVnode不是同一个节点时，
+    // 如果oldVnode是真实dom节点或hydrating设置为true
+    // 需要用hydrate函数将虚拟dom和真实dom进行映射
+    // 然后将oldVnode设置为对应的虚拟dom，找到oldVnode.elm的父节点
+    // 根据vnode创建一个真实dom节点并插入到该父节点中oldVnode.elm的位置
+}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>patchVnode 算法</h1>
+
+</hgroup><article>
+
+<ol>
+<li>如果oldVNode跟vnode完全一致， 不做什么操作</li>
+<li>两者都是静态节点， 具有相同的key， 并且vnode是克隆节点或者v-once指令控制的节点， 只需要把oldVnode。ele
+ 和oldVnode.child都复制到vnode上</li>
+<li>如果vnode不是文本节点</li>
+</ol>
+<ul>
+<li>如果两者都有子节点，且两者不完全一致，执行更新子节点操作</li>
+<li>如果只有oldVnode有子节点，就删除这些节点</li>
+<li>如果只有vnode有子节点，就创建这些节点</li>
+<li>如果都没有子子节点，oldVnode是文本节点，就把vnode.elm设置为空字符串</li>
+</ul>
+<ol>
+<li>如果vnode是文本节点，但新旧文本不同，直接更新新的就可以了</li>
+</ol>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.2</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'slide',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+
+
+<!--placeholder-->
+</body>
+</html>
