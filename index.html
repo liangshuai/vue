@@ -186,9 +186,9 @@ const greet = <code>Hello, ${ name }</code>;</p>
 </hgroup><article>
 
 <pre><code class="js">function restParams(a, b, ...c) {
-    console.log(1, 2, 3, 4, 5);
+    console.log(a,b,...c);
 }
-restParams(1, 2, [3, 4, 5]); // 1,2,3,4,5
+restParams(1, 2, 3, 4, 5); // 1,2,3,4,5
 </code></pre>
 <p>rest参数用法同Java的不定参数类似， 只能放在最后且只能有一个不定参数</p>
 
