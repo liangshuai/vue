@@ -499,7 +499,7 @@ new Vue({
 
 <h2>父组件的props更新之后，自组件总会拿到最新的数据</h2>
 <pre><code class="html">&lt;!-- Parent Component --&gt;
-&lt;parent-comp :propA=&quot;propA&quot; propB=&quot;propB&quot;&gt;&lt;/parent-comp&gt;
+&lt;child :propA=&quot;propA&quot; propB=&quot;propB&quot;&gt;&lt;/child&gt;
 </code></pre>
 <pre><code class="js">Vue.component(&#39;child&#39;, {
   props: {
